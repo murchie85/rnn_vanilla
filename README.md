@@ -1,5 +1,7 @@
 # Vanilla RNN in Python with NO libraries
 
+![](img1.png)  
+
 This is a Python implementation of a vanilla RNN. It uses a simple toy dataset to demonstrate how to train an RNN using backpropagation through time (BPTT). The code is intended to provide a basic understanding of how RNNs work and how to implement them in Python without using any deep learning frameworks like TensorFlow or PyTorch.
 
 ## Requirements  
@@ -67,5 +69,5 @@ After training, the RNN model generates a new sequence of outputs based on the i
 
 
 ## Conclusion  
-  
+
 This Python implementation of a vanilla RNN provides a basic understanding of how RNNs work and how to implement them in Python without using any deep learning frameworks. The code can be easily modified to work with other datasets and network architectures
