@@ -14,12 +14,21 @@ y = np.array([[0.4],
 num_hidden_units = 4
 
 # Initialize the weight matrices and bias vectors for the RNN
-#Wxh = np.random.randn(num_hidden_units, 1)
-Wxh = np.random.randn(num_hidden_units, X.shape[1])
+
+
+# Wxh, Whh, Why, bh, and by are the weight matrices and bias vectors that define the parameters of your RNN model. Specifically,
+# Wxh is the weight matrix that connects the input X to the hidden state h.
+# Whh is the weight matrix that connects the previous hidden state h to the current hidden state h.
+# Why is the weight matrix that connects the hidden state h to the output Y.
+# bh is the bias vector for the hidden state h.
+# by is the bias vector for the output Y.
+
+Wxh = np.random.randn(X.shape[1], num_hidden_units)
 Whh = np.random.randn(num_hidden_units, num_hidden_units)
-Why = np.random.randn(1, num_hidden_units)
+Why = np.random.randn(num_hidden_units,1)
 bh = np.zeros((num_hidden_units, 1))
 by = np.zeros((1, 1))
+
 
 # Define the forward pass function to return the output sequence and final hidden state
 def rnn_forward(X, Wxh, Whh, Why, bh, by):
@@ -55,6 +64,27 @@ def mse_loss(Y, y_true):
 learning_rate = 0.01
 num_epochs = 100
 
+"""
+dLdY is the derivative of the loss with respect to the output sequence Y. It is computed as dLdY = 2 * (Y_pred - y), where Y_pred is the predicted output sequence and y is the true output sequence. The factor of 2 comes from the chain rule of differentiation.
+
+dLdWhy is the derivative of the loss with respect to the weight matrix Why. It is computed as dLdWhy = np.dot(dLdY.T, h).T, where h is the hidden state at the last time step.
+
+dLdh is the derivative of the loss with respect to the hidden state h. It is computed as dLdh = np.dot(Why.T, dLdY).
+
+dLdZ is the derivative of the loss with respect to the input to the activation function for the hidden state. It is computed as dLdZ = dLdh * (1 - h**2), where (1 - h**2) is the derivative of the hyperbolic tangent activation function.
+
+dLdWhh is the derivative of the loss with respect to the weight matrix Whh. It is computed as dLdWhh = np.dot(dLdZ, h.T).
+
+dLdWxh is the derivative of the loss with respect to the weight matrix Wxh. It is computed as dLdWxh = np.dot(dLdZ, X).
+
+dLdbh is the derivative of the loss with respect to the bias vector bh. It is computed as dLdbh = np.sum(dLdZ, axis=1, keepdims=True).
+
+dLdby is the derivative of the loss with respect to the bias vector by. It is computed as dLdby = np.sum(dLdY, axis=0, keepdims=True).
+
+"""
+
+
+
 # Train the RNN
 for epoch in range(num_epochs):
     # Perform the forward pass
@@ -64,8 +94,13 @@ for epoch in range(num_epochs):
     loss = mse_loss(Y_pred, y)
 
     # Compute the gradients using backpropagation
-    dLdY = 2 * (Y_pred - y)
-    dLdWhy = np.dot(dLdY.T, h.T)
+    dLdY = 2 * (Y_pred - y).T
+    print(dLdY)
+
+    #dLdWhy = np.dot(dLdY.T, h.T)
+    #dLdWhy = np.dot(dLdY.T, h).T
+    #dLdWhy = np.dot(dLdY.T, h).T
+    dLdWhy = np.dot(h, dLdY).T
     dLdh = np.dot(dLdY, Why)
     dLdZ = dLdh * (1 - h ** 2)
     dLdWhh = np.dot(dLdZ.T, h.T)
